@@ -8,8 +8,12 @@ class Node:
 		self.id = Node.id
 		self.symbol = symbol #zero mean not valid symbol
 		Node.id = Node.id + 1
+
 	def getSym(self):
 		return self.symbol
+
+	def setSym(self, sym):
+		self.symbol = sym
 
 class BinaryNode(Node):
 	def __init__(self, symnum):
@@ -88,12 +92,62 @@ def parsePolishNotation(formula):
 
 	return subTree, remainingFormula
 
+def CopyTree(root): # copy all subtree
+
+	clonedRoot = None
+	
+	if isinstance(root, BinaryNode):
+		clonedRoot = BinaryNode(root.getSym())
+		clonedRoot.left = CopyTree(root.left)
+		clonedRoot.right = CopyTree(root.right)
+
+	elif isinstance(root, UnaryNode):
+		clonedRoot = UnaryNode(root.getSym())
+		clonedRoot.child = CopyTree(root.child)
+
+	elif isinstance(root, TerminalNode):
+		clonedRoot = TerminalNode(root.getSym())
+		clonedRoot.var = root.var
+
+	return clonedRoot
+
+def ImpFree(root):
+	
+	key = root.getSym()
+
+	if key is 4:
+		tempNode = UnaryNode(3)
+		tempNode.child = ImpFree(root.left)
+		root.left = tempNode
+		root.right = ImpFree(root.right)
+		root.setSym(2)
+
+	elif key is 5:
+		tempNode = UnaryNode(3)
+		tempNode.child = ImpFree(root.right)
+		root.right = tempNode
+		root.left = ImpFree(root.left)
+		root.setSym(2)
+
+	elif key is 6:
+		tempNode = BinaryNode(1)
+		clonedRoot = CopyTree(root)
+		root.setSym(4)
+		clonedRoot.setSym(5)
+		tempNode.left = ImpFree(root)
+		tempNode.right = ImpFree(clonedRoot)
+		root = tempNode
+
+	return root
+
 if __name__ == '__main__':
 
 	root, RF = parsePolishNotation("> & - p q & p > r q")
 
 	if RF is not "":
 		print "Invaild formula! Bye Bye!"
-		sys.exit()	
+		sys.exit()
+
+	root = ImpFree(root)	
 
 	printTree(root)
