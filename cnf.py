@@ -138,15 +138,43 @@ def ImpFree(root):
 		tempNode.right = ImpFree(clonedRoot)
 		root = tempNode
 
+	elif key is (1 or 2):
+		root.left = ImpFree(root.left)
+		root.right = ImpFree(root.right)
+
+	elif key is 3:
+		root.child = ImpFree(root.child)
+
+	elif key is 7:
+		pass
+
+	else:
+		print "Invaild symbol of Node! Bye Bye!"
+		sys.exit()
+
+	return root
+
+def NNF(root):
+	
+	if isinstance(root, BinaryNode):
+
+	elif isinstance(root, UnaryNode):
+
+	elif isinstance(root, TerminalNode):
+		pass
+
 	return root
 
 if __name__ == '__main__':
 
-	root, RF = parsePolishNotation("> & - p q & p > r q")
+	root, RF = parsePolishNotation("= & - p q & p > r q")
 
 	if RF is not "":
 		print "Invaild formula! Bye Bye!"
 		sys.exit()
+
+	printTree(root)
+	print ""
 
 	root = ImpFree(root)	
 
