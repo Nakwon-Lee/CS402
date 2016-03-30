@@ -156,14 +156,26 @@ def ImpFree(root):
 
 def NNF(root):
 	
-	if isinstance(root, BinaryNode):
+	leftC = None
+	rightC = None
+	child = None
+	key = None
 
-	elif isinstance(root, UnaryNode):
+	if isinstance(root, BinaryNode):
+		leftC, key = NNF(root.left)
+		rightC, key = NNF(root.right)
+		key = 2
+		
+	elif isinstance(root, UnaryNode): # negation is only an UnaryNode
+		child, key = NNF(root.child)
+		if key is 2: # child is binary
+			leftC = UnaryNode(3)
+			rightC = UnaryNode(3)
 
 	elif isinstance(root, TerminalNode):
 		pass
 
-	return root
+	return root, key
 
 if __name__ == '__main__':
 
