@@ -155,31 +155,48 @@ def ImpFree(root):
 	return root
 
 def NNF(root):
-	
 	leftC = None
 	rightC = None
-	child = None
 	key = None
 
 	if isinstance(root, BinaryNode):
-		leftC, key = NNF(root.left)
-		rightC, key = NNF(root.right)
-		key = 2
+		root.left = NNF(root.left)
+		root.right = NNF(root.right)
 		
 	elif isinstance(root, UnaryNode): # negation is only an UnaryNode
-		child, key = NNF(root.child)
-		if key is 2: # child is binary
+		key = root.child.getSym()
+		if key is (1 or 2): # child is binary
 			leftC = UnaryNode(3)
 			rightC = UnaryNode(3)
+			leftC.child = root.child.left
+			rightC.child = root.child.right
+			root.child.left = leftC
+			root.child.right = rightC
+			op = root.child.getSym()
+			if op is 1: # and
+				root.child.setSym(2)
+			elif op is 2: # or
+				root.child.setSym(1)
+			root = root.child
+			root.left = NNF(root.left)
+			root.right = NNF(root.right)
+		elif key is 3: # child is unary
+			root = NNF(root.child.child)
+		else:
+			root.child = NNF(root.child)
 
 	elif isinstance(root, TerminalNode):
 		pass
 
-	return root, key
+	return root
+
+def CNF(root):
+
+	return root
 
 if __name__ == '__main__':
 
-	root, RF = parsePolishNotation("= & - p q & p > r q")
+	root, RF = parsePolishNotation("> & - p q & p > r q")
 
 	if RF is not "":
 		print "Invaild formula! Bye Bye!"
@@ -188,6 +205,7 @@ if __name__ == '__main__':
 	printTree(root)
 	print ""
 
-	root = ImpFree(root)	
-
+	root = ImpFree(root)
+	root = NNF(root)
+	
 	printTree(root)
