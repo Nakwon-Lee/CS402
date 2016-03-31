@@ -191,6 +191,24 @@ def NNF(root):
 	return root
 
 def CNF(root):
+	key = root.getSym()
+
+	if key is 2: # root is "or"
+		leftkey = root.left.getSym()
+		rightkey = root.right.getSym()
+
+		if leftkey is 1: # left child is "and"
+			f1 = root.left.left
+			f2 = root.left.right
+			f3 = root.right
+
+			root.left.right = f3
+			root.right = BinaryNode(2)
+
+			root.right.left = f2
+			root.right.right = CopyTree(f3)
+
+		elif (leftkey is not 1) and rightkey is  
 
 	return root
 
