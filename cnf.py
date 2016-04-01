@@ -194,11 +194,20 @@ def CNF(root):
 	key = root.getSym()
 
 	if key is 2: # root is "or"
-		  
+		CNF(root.left)
+		CNF(root.right)
+		DISTR(root)
+	elif key is 1: # root is "and"
+		CNF(root.left)
+		CNF(root.right)
 
 	return root
 
-def DISTR(root)
+def DISTR(root):
+
+	if not isinstance(root, BinaryNode):
+		return root
+
 	leftkey = root.left.getSym()
 	rightkey = root.right.getSym()
 
@@ -208,7 +217,7 @@ def DISTR(root)
 		f3 = root.right
 
 		root.left.right = f3
-		root.right = BinaryNode(1)
+		root.right = BinaryNode(2)
 
 		root.right.left = f2
 		root.right.right = CopyTree(f3)
@@ -216,7 +225,25 @@ def DISTR(root)
 		root.setSym(1)
 		root.left.setSym(2)
 
-	elif (leftkey is not 1) and rightkey is
+		DISTR(root.left)
+		DISTR(root.right)
+
+	elif (leftkey is not 1) and rightkey is 1: # right child is "and"
+		f1 = root.left
+		f2 = root.right.left
+		f3 = root.right.right
+
+		root.left = BinaryNode(2)
+		root.left.left = f1
+		root.left.right = f2
+
+		root.right.left = CopyTree(f1)
+
+		root.setSym(1)
+		root.right.setSym(2)
+
+		DISTR(root.left)
+		DISTR(root.right)	
 
 	return root 
 
@@ -230,8 +257,13 @@ if __name__ == '__main__':
 
 	printTree(root)
 	print ""
-
+	
 	root = ImpFree(root)
 	root = NNF(root)
+	
+	printTree(root)
+	print ""
+	
+	root = CNF(root)
 	
 	printTree(root)
