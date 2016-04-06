@@ -81,9 +81,8 @@ def read_file(filename):
 			temprow.append(temp)
 		varmapc.append()
 
-
-def formula(r):
-	root1 = BinaryNode()
+def onlyOneCond(r):
+	rootK = None
 	for k in range(len(rows[r])):
 		rootC = None
 		for c in range(M-rows[r][k]):
@@ -136,12 +135,62 @@ def formula(r):
 				rootC = root
 			else:
 				t_rootC = BinaryNode(2)
+				t_rootC.left = root
+				t_rootC.right = rootC
+				rootC = t_rootC
+
+		if rootK is None:
+			rootK = rootC
+		else:
+			t_rootK = BinaryNode(1)
+			t_rootK.left = rootC
+			t_rootK.right = rootK
+			rootK = t_rootK
+
+	return rootK
+
+def orderCond(r):
+	
+	rootO = None
+	for k is range(len(rows[r])-1):
+		rootC = None
+		for c is range(M-1):
+			root = BinaryNode(4)
+			root.left = TerminalNode(7)
+			root.left.var = varmapr[r][c][k]
+			root.right = BinaryNode(1)
+			root.right.left = UnaryNode(3)
+			root.right.left.child = TerminalNode(7)
+			root.right.left.child.var = varmapr[r][c+1][k+1]
+			root.right.right = None
+			
+			for i is range(c+2,M):
+				if root.right.right is None:
+					root.right.right = TerminalNode(7)
+					root.right.right.var = varmapr[r][i][k+1]
+				else:
+					t_rrright = BinaryNode(2)
+					t_rrright.right = root.right.right
+					t_rrright.left = TerminalNode(7)
+					t_rrright.left.var = varmapr[r][i][k+1]
+					root.right.right = t_rrright
+
+			if rootC is None:
+				rootC = root
+			else:
+				t_rootC = BinaryNode(2)
+				t_rootC.left = rootC
+				t_rootC.right = root
+				rootC = t_rootC
+				
+
 
 def nonogram():
 	
 	#number of blanks for row is M, the length of colunm 
 	for i in range(len(rows)):
-		formula(i)
+		rootK = onlyOneCond(i)
+		rootO = orderCond(i)
 
 if __name__ == '__main__':
 
