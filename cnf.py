@@ -138,7 +138,11 @@ def ImpFree(root):
 		tempNode.right = ImpFree(clonedRoot)
 		root = tempNode
 
-	elif key is (1 or 2):
+	elif key is 1:
+		root.left = ImpFree(root.left)
+		root.right = ImpFree(root.right)
+
+	elif key is 2:
 		root.left = ImpFree(root.left)
 		root.right = ImpFree(root.right)
 
