@@ -48,16 +48,16 @@ def read_file(filename):
 
 	for i in range(2,2+N):
 		temp = []
-		for j in range(len(lines[i])):
-			if lines[i][j].isdigit():
-				temp.append(int(lines[i][j]))
+		temp2 = lines[i].split()
+		for s in temp2:
+			temp.append(int(s))
 		rows.append(temp)
 
 	for i in range(2+N,2+N+M):
 		temp = []
-		for j in range(len(lines[i])):
-			if lines[i][j].isdigit():
-				temp.append(int(lines[i][j]))
+		temp2 = lines[i].split()
+		for s in temp2:
+			temp.append(int(s))
 		cols.append(temp)
 
 	global varnum
@@ -214,7 +214,7 @@ def NNF(root):
 		
 	elif isinstance(root, UnaryNode): # negation is only an UnaryNode
 		key = root.child.getSym()
-		if key is (1 or 2): # child is binary
+		if (key is 1) or (key is 2): # child is binary
 			leftC = UnaryNode(3)
 			rightC = UnaryNode(3)
 			leftC.child = root.child.left

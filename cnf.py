@@ -169,7 +169,7 @@ def NNF(root):
 		
 	elif isinstance(root, UnaryNode): # negation is only an UnaryNode
 		key = root.child.getSym()
-		if key is (1 or 2): # child is binary
+		if (key is 1) or (key is 2): # child is binary
 			leftC = UnaryNode(3)
 			rightC = UnaryNode(3)
 			leftC.child = root.child.left
@@ -232,7 +232,7 @@ def DISTR(root):
 		DISTR(root.left)
 		DISTR(root.right)
 
-	elif (leftkey is not 1) and rightkey is 1: # right child is "and"
+	elif (leftkey is not 1) and (rightkey is 1): # right child is "and"
 		f1 = root.left
 		f2 = root.right.left
 		f3 = root.right.right
@@ -249,25 +249,48 @@ def DISTR(root):
 		DISTR(root.left)
 		DISTR(root.right)	
 
-	return root 
+	return root
+
+def printCNF(root):
+	
+	key = root.getSym()
+
+	if isinstance(root, BinaryNode):
+		if key is 1: # and Node
+			print "(",
+			printCNF(root.left)
+			print ") & (",
+			printCNF(root.right)
+			print ")",
+		elif key is 2: # or Node
+			printCNF(root.left)
+			print " | ",
+			printCNF(root.right)	
+
+	elif isinstance(root, UnaryNode):
+		print "-",		
+		printCNF(root.child)
+
+	elif isinstance(root, TerminalNode):
+		print root.var,
 
 if __name__ == '__main__':
 
-	root, RF = parsePolishNotation("> & - p q & p > r q")
+	root, RF = parsePolishNotation(sys.argv[1])
 
 	if RF is not "":
 		print "Invaild formula! Bye Bye!"
 		sys.exit()
 
-	printTree(root)
-	print ""
+	#printTree(root)
+	#print ""
 	
 	root = ImpFree(root)
 	root = NNF(root)
 	
-	printTree(root)
-	print ""
+	#printTree(root)
+	#print ""
 	
 	root = CNF(root)
 	
-	printTree(root)
+	printCNF(root)
